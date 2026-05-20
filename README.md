@@ -41,7 +41,7 @@ Se realizaron los cambios solicitados por la consigna, finalizando el TP
 con un dataset limpio en .csv e imágenes que permiten graficar la situación
 del dataset posterior a esa limpieza para su análisis estadístico.
 
-###Corrección de Sprint 1
+### Corrección de Sprint 1
 Se realizaron modificaciones en el ejercicio 03 y 05 de acuerdo a lo observado
 por los docentes de la cátedra. Se dejaron a modo de registro del cambio las
 celdas originales comentadas.
