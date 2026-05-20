@@ -36,7 +36,7 @@ El push del propio notebook se debe hacer no por comando git sino por "File" > "
 - Redacción de la conclusión final del análisis de datos.
 - Actualización del archivo `Readme.md` incluyendo el objetivo, contexto y conclusiones del Sprint 1.
 
-##Corrección errores sprint 1
+## Corrección errores sprint 1
 - Se modificaron los puntos corregidos por los profesores
 - Ejercicio 03 normalización de fechas.
 - Ejercicio 05 gráfico de agrupación por horario 00-00
