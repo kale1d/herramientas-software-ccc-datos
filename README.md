@@ -1,48 +1,50 @@
-# herramientas-software-ccc-datos
-# Proyecto Urban Flow (Herramientas de software para análisis de datos)
-
-## Sprint 1
+# Urban Flow - Sistema de Radares Urbanos
+## Sprint 2: Validación de Evidencia Visual
 
 ### Objetivo
-El objetivo principal de este proyecto es aplicar los conocimientos adquiridos
-para el versionado de código, la organización, limpieza del código y la
-utilización exhaustiva de la librería Pandas para la manipulación de datos.
+Desarrollar e implementar un sistema automatizado que determine qué multas
+administrativas por exceso de velocidad cuentan con evidencia visual válida
+en la localidad de Vaalserberg.
 
-### Introducción y Contexto
-La localidad de Vaalserberg (Bélgica), ubicada en una zona fronteriza,
-cuenta con un sistema de radares urbanos para la detección de infracciones
-por exceso de velocidad.
-Los registros históricos provienen de sistemas heredados que presentan
-graves errores de formato y datos faltantes.
-El propósito de este sprint es analizar y depurar estos datos para obtener
-información fidedigna y preparar el terreno para la migración al nuevo
-sistema sin arrastrar inconsistencias.
+### Introducción y Contexto del Sprint
+Los radares urbanos generan registros de multas de forma automática y las
+cámaras asocian la evidencia visual. Sin embargo, se presentan desafíos
+operativos: no todas las multas tienen imágenes, no todas las imágenes
+corresponden a infracciones y existen errores de detección.
+Este sprint procesa el dataset del Sprint 1 junto con un banco de imágenes
+para realizar una vinculación inteligente mediante procesamiento digital de
+imágenes y reconocimiento óptico de caracteres (OCR).
 
-### Conclusión del Análisis de Datos
-Tras procesar el dataset histórico (`speeding_fines.csv`), se concluye que
-el sistema heredado carecía de validaciones básicas de entrada.
-Se detectó una alta presencia de registros "basura", incluyendo caracteres
-especiales en patentes y ubicaciones, así como fallos en los sensores de
-tiempo que generaron fechas y horas nulas (estandarizadas durante la
-limpieza a `1932-01-01` y `00:00`).
+---
 
-Asimismo, el descubrimiento más relevante a nivel de negocio es que el
-sistema viejo guardaba registros de vehículos que **no estaban en infracción**
-(velocidades dentro del margen de tolerancia del 5%). Esto se visualizó también
-al practicar diversos ejercicios de limpieza donde se observaron valores
-negativos en el exceso de velocidad real, eso implicaba que en
-realidad no existía tal exceso.
-Al aplicar filtros estadísticos (eliminación de outliers vía rango
-intercuartílico) y reglas de negocio, se logró depurar la base de datos
-para aislar únicamente las verdaderas multas.
-El dataset resultante es ahora consistente, confiable y apto para
-integrarse al nuevo sistema de detección.
+### Ejercicio 06: Análisis de Impacto y Relación entre Imágenes y Datos
 
-Se realizaron los cambios solicitados por la consigna, finalizando el TP
-con un dataset limpio en .csv e imágenes que permiten graficar la situación
-del dataset posterior a esa limpieza para su análisis estadístico.
+Al concluir este desarrollo, podemos determinar las siguientes conclusiones
+analíticas sobre la relación entre la evidencia visual y los registros estructurados:
 
-### Integrantes del equipo
-Denise Neustadt y Ailén Iglesias Barrera.
-CCC Licenciatura de Ciencia de Datos.
-Abril 2026.
+* **Naturaleza y Contraste de los Datos:** Existe una clara diferencia entre
+los datos administrativos (estructurados, históricos y propensos a la ausencia
+de valores o `NaN` por sistemas heredados) y los datos no estructurados
+(imágenes de cámaras). La consistencia del sistema depende de un puente de
+traducción efectivo, en este caso, el motor OCR y el algoritmo de coincidencia
+de cadenas.
+* **Efectividad del Pipeline de Imagen (Grises vs. Canny):** Se determinó que
+filtros como Canny son ideales para el aislamiento geométrico de contornos
+(localizar dónde está la patente), pero destruyen la información tipográfica
+esencial que necesitan los modelos de lenguaje visual. Por ello, la conversión
+a escala de grises resultó ser el entorno óptimo para extraer texto sólido,
+mitigando el ruido cromático sin perder el contraste de los caracteres.
+Se probaron las dos opciones y nos inclinamos hacia la escala de Grises.
+En Canny nos había dado un total de 411 y en escala de Gises 658.
+* **Análisis de la Tasa de Match:** La tasa de coincidencia final expone una
+desconexión parcial entre las capturas de las cámaras y el lote de multas del
+DataFrame. En ciencia de datos, esto evidencia que los bancos de imágenes del
+mundo real suelen representar ventanas temporales específicas o recortes de
+auditoría que no necesariamente cubren la totalidad histórica de un sistema
+heredado.
+* **Impacto Operativo de la Solución:** A pesar de la disparidad de volumen,
+la automatización del emparejamiento con un umbral posicional flexible
+(ratio $\ge$ 80%) permite validar visualmente un porcentaje significativo de
+infracciones. Esto dota de integridad legal y probatoria al proceso de cobro,
+permitiendo priorizar las auditorías humanas únicamente sobre los casos sin
+coincidencia o en estado 'IMPAGA' con evidencias dudosas.
